@@ -12,7 +12,7 @@ extern "C"{
 /*				Local Type Definitions		*/
 /* ------------------------------------------------------------ */
 #define WELCOME		0
-#define INTRO		2
+#define HELP		2
 #define GAME		1
 #define OVER		3
 #define RED_LED   GPIO_PIN_1
@@ -97,8 +97,8 @@ void loop()
   case WELCOME:
     WelcomeScreen();
     break;
-  case INTRO:
-    IntroScreen();
+  case HELP:
+    HelpScreen();
     break;
   case GAME:
     GameScreen();
@@ -254,15 +254,26 @@ char CheckSwitches() {
 }
 
 void WelcomeScreen() {
-    char welcome[] = {
-  'W','e','l','c','o','m','e',' ','to',' ','S','t','r','e','e','t',' ','R','a','c','e'
-  };
+   char welcomeTo[] = {
+  'W','e','l','c','o','m','e',' ','t', 'o'};
+   OrbitOledSetCursor(3,0);
+   OrbitOledPutString(welcomeTo);
+   
+  char streetRacer[] = {
+  'S','t','r','e','e','t',' ','R','a','c','e','r'};  
+  OrbitOledSetCursor(2,1);
+  OrbitOledPutString(streetRacer);
+  
+  char help[] = {'H','e','l','p'};
+  OrbitOledSetCursor(12,3);
+  OrbitOledPutString(help);
 
-   OrbitOledSetCursor(0,0);
-   OrbitOledPutString(welcome);
+  char start[] = {'S','t','a','r','t'};
+  OrbitOledSetCursor(0,3);
+  OrbitOledPutString(start);
 }
 
-void IntroScreen(){
+void HelpScreen(){
 }
 
 void GameScreen(){
