@@ -11,7 +11,13 @@ extern "C"{
 /* ------------------------------------------------------------ */
 /*				Local Type Definitions		*/
 /* ------------------------------------------------------------ */
-
+#define WELCOME		0
+#define INTRO		2
+#define GAME		1
+#define OVER		3
+#define RED_LED   GPIO_PIN_1
+#define BLUE_LED  GPIO_PIN_2
+#define GREEN_LED GPIO_PIN_3
 
 /* ------------------------------------------------------------ */
 /*				Global Variables		*/
@@ -70,21 +76,41 @@ char CheckSwitches();
 
 void setup()
 {
-  DeviceInit();  
-  
-  char welcome[] = {
-  'W','e','l','c','o','m','e',' ','to',' ','S','t','r','e','e','t',' ','R','a','c','e'
-  };
-  
-   OrbitOledSetCursor(0,0);
-   OrbitOledPutString(welcome);
-   
+  DeviceInit();
+
+
+
 }
 
 void loop()
 {
-  // put your main code here, to run repeatedly:
-  
+  char bDemoState = 0;
+  volatile uint32_t ui32Loop;
+
+  bDemoState = CheckSwitches();
+  for(ui32Loop = 0; ui32Loop < 200000; ui32Loop++)
+  {
+  }
+
+  switch(bDemoState) {
+
+  case WELCOME:
+    WelcomeScreen();
+    break;
+  case INTRO:
+    IntroScreen();
+    break;
+  case GAME:
+    GameScreen();
+    break;
+  case OVER:
+    OverScreen();
+    break;
+  default:
+    Welcome();
+    break;
+  }
+
 }
 
 /* ------------------------------------------------------------ */
@@ -225,4 +251,22 @@ char CheckSwitches() {
 
   return chSwtCur;
 
+}
+
+void WelcomeScreen() {
+    char welcome[] = {
+  'W','e','l','c','o','m','e',' ','to',' ','S','t','r','e','e','t',' ','R','a','c','e'
+  };
+
+   OrbitOledSetCursor(0,0);
+   OrbitOledPutString(welcome);
+}
+
+void IntroScreen(){
+}
+
+void GameScreen(){
+}
+
+void OverScreen(){
 }
