@@ -84,15 +84,16 @@ void setup()
 
 void loop()
 {
-  char bDemoState = 0;
+  char bGameState = 0;
   volatile uint32_t ui32Loop;
 
-  bDemoState = CheckSwitches();
+  bGameState = CheckSwitches();
+  
   for(ui32Loop = 0; ui32Loop < 200000; ui32Loop++)
   {
   }
 
-  switch(bDemoState) {
+  switch(bGameState) {
 
   case WELCOME:
     WelcomeScreen();
@@ -107,7 +108,7 @@ void loop()
     OverScreen();
     break;
   default:
-    Welcome();
+    WelcomeScreen();
     break;
   }
 
@@ -254,30 +255,90 @@ char CheckSwitches() {
 }
 
 void WelcomeScreen() {
-   char welcomeTo[] = {
-  'W','e','l','c','o','m','e',' ','t', 'o'};
-   OrbitOledSetCursor(3,0);
-   OrbitOledPutString(welcomeTo);
-   
-  char streetRacer[] = {
-  'S','t','r','e','e','t',' ','R','a','c','e','r'};  
-  OrbitOledSetCursor(2,1);
-  OrbitOledPutString(streetRacer);
   
+  char welcomeTo[] = {'W','e','l','c','o','m','e',' ','t', 'o'};
+  char streetRacer[] = {
+  'S','t','r','e','e','t',' ','R','a','c','e','r'};
+  //char empty[] {' ',' ',' ',' ',' ',' '};
+  char start[] = {'S','t','a','r','t',' ',' ',' ',' ',' ','H','e','l','p'};
   char help[] = {'H','e','l','p'};
-  OrbitOledSetCursor(12,3);
-  OrbitOledPutString(help);
-
-  char start[] = {'S','t','a','r','t'};
-  OrbitOledSetCursor(0,3);
+   
+   char a[] = {'a', 'a', 'a', 'a'};
+   char b[] = {'b'};
+   char c[] = {'c'};
+   char d[] = {'d'};
+   
+   
+  /*
+   * If applicabe, reset OLED
+   */
+  if(fClearOled == true) {
+    OrbitOledClear();
+    OrbitOledMoveTo(0,0);
+    OrbitOledSetCursor(0,0);
+    fClearOled = false;
+  } 
+  
+//    OrbitOledSetCursor(0,0);
+//  OrbitOledPutString(a);
+//    OrbitOledSetCursor(0,1);
+//  OrbitOledPutString(b);
+//    OrbitOledSetCursor(0,2);
+//  OrbitOledPutString(c);
+//    OrbitOledSetCursor(0,3);
+//  OrbitOledPutString(help);
+//   // OrbitOledSetCursor(9,3);
+//   // OrbitOledPutString(help);
+  
+  /*
+   * Display welcome screen
+   */
+ // OrbitOledSetCursor(3,0);
+  //OrbitOledPutString(welcomeTo);
+  
+  OrbitOledSetCursor(2,1);
+  OrbitOledPutString(streetRacer);  
+   
+  //OrbitOledMoveTo(0,19);
+  //OrbitOledLineTo(127, 19);
+   
+  OrbitOledSetCursor(0, 4);
   OrbitOledPutString(start);
+  
 }
 
 void HelpScreen(){
+    /*
+   * If applicabe, reset OLED
+   */
+  if(fClearOled == true) {
+    OrbitOledClear();
+    OrbitOledMoveTo(0,0);
+    OrbitOledSetCursor(0,0);
+    fClearOled = false;
+  } 
 }
 
 void GameScreen(){
+    /*
+   * If applicabe, reset OLED
+   */
+  if(fClearOled == true) {
+    OrbitOledClear();
+    OrbitOledMoveTo(0,0);
+    OrbitOledSetCursor(0,0);
+    fClearOled = false;
+  } 
 }
 
 void OverScreen(){
+    /*
+   * If applicabe, reset OLED
+   */
+  if(fClearOled == true) {
+    OrbitOledClear();
+    OrbitOledMoveTo(0,0);
+    OrbitOledSetCursor(0,0);
+    fClearOled = false;
+  } 
 }
