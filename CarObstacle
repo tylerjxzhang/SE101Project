@@ -1,0 +1,126 @@
+//If possible can someone take a photo of the screen with this code? I forgot to save the code lost the original bmp.
+//I also added commented some code and those lines I'm not sure if we need it or not.
+
+#include "functions.h" // Energia will compile the functions.cpp file for us
+//#include <delay.h>
+//#include <FillPat.h>
+//#include <I2CEEPROM.h>
+//#include <LaunchPad.h>
+//#include <OrbitBoosterPackDefs.h>
+//#include <OrbitOled.h>
+//#include <OrbitOledChar.h>
+//#include <OrbitOledGrph.h>
+
+/* ------------------------------------------------------------ */
+/* Local Variables                        			*/
+/* ------------------------------------------------------------ */
+const unsigned int bitmapHeight =9;  // The height of the bitmap we're about to create
+const unsigned int bitmapWidth = 15;   // The width of the bitmap we're about to create
+
+// Create the bitmap of car
+char bmp[][15] = 
+{ 
+  {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0      }
+    ,
+    {
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1      }
+    ,
+    {
+    1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1      }
+    ,
+    {
+    1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1      }
+    ,
+    {
+    1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1      }
+    ,
+    {
+    1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1      }
+    ,
+    {
+    1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1      }
+    ,
+    {
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1      }
+    ,
+     {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0     }
+  ,
+};
+
+// Since this bitmap clearly does not cover the entire 128 by 32 OLED screen
+// we need to specify the co-ordinates where we draw the bitmap.
+// These co-ordinates correspond to the TOP LEFT of the bitmap,
+// so if you wanted to draw this at the very top left of the screen, use (0, 0).
+unsigned int x = 0;
+unsigned int y = 0;
+
+// ---------------------------------------------------------------------------//
+// This is the sneaky part... actually drawing your bitmap as a 2D array is
+// very hard, so I helped you out by writing a admittedly hard-to-understand
+// function to convert the bitmap to bytes that the booster pack can understand.
+char* formattedBitmap(char* input, unsigned int width, unsigned int height)
+{
+
+  unsigned int h = ceil(height / 8.0);
+  char *output = (char*)calloc(h * width, sizeof(char));
+  char b, temp;
+  for (unsigned int hbyte = 0; hbyte < h; ++hbyte) {
+    for (unsigned int i = 0; i < width; ++i) {
+      b = 0;
+      for (unsigned int j = 0; j < ((height - hbyte * 8)/8 ? 8 : (height%8)); ++j) {
+        temp = input[(8*hbyte+j)*width+i];
+        if (temp) b |= 1 << j;
+      }
+
+      output[hbyte*width+i]|=b;
+    }
+  }
+  return output;
+}
+char* bitmap = formattedBitmap((char*)bmp, bitmapWidth, bitmapHeight);
+// ---------------------------------------------------------------------------//
+
+
+void setup()
+{
+  deviceInit(); // Helper function found in our functions.cpp
+
+  // Reset OLED (function from functions.cpp)
+  oledReset();
+  OrbitOledUpdate();
+}
+
+void loop()
+{
+  // Feed our bitmap and its dimensions and co-ordinates into
+  // the helper function
+  oledDraw(bitmap, x, y, bitmapWidth, bitmapHeight);
+  oledDraw(bitmap, x-10, y+20, bitmapWidth, bitmapHeight);
+
+  // Wait for the user to perceive the image
+  //delay(50);
+
+  OrbitOledUpdate();
+  delay(80);
+
+ //Move the car up by changing the x coordinate and delaying some time in between
+  for(int i=10;i<128;i+=10)
+  { 
+    OrbitOledClear();
+    x=i;
+    
+    //Draw the two cars with different x and y. (the first one 0,0; second one -10, 20 which is on the third lane)
+    oledDraw(bitmap, x, y, bitmapWidth, bitmapHeight);
+    oledDraw(bitmap, x-10, y+20, bitmapWidth, bitmapHeight);
+    
+    OrbitOledUpdate();
+    delay(80);
+  }
+  
+  oledReset();
+
+}
+
+
