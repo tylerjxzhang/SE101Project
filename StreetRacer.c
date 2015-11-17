@@ -1,6 +1,8 @@
 extern "C"{
+#include "functions.h"
 #include <delay.h>
 #include <FillPat.h>
+#include <I2CEEPROM.h>
 #include <LaunchPad.h>
 #include <OrbitBoosterPackDefs.h>
 #include <OrbitOled.h>
@@ -34,6 +36,54 @@ bool	fClearOled;
 /*
  * Car Definitions
  */
+ 
+const unsigned int bitmapHeight =9;  // The height of the bitmap we're about to create
+const unsigned int bitmapWidth = 15;   // The width of the bitmap we're about to create
+ 
+ // Now create the bitmap (make sure it has the correct width and height as specified above)
+// To make it simple, we're using binary. It's simple - 1 means LED is on. 0=off.
+// You can make the bitmap as big as you want (within reason) and draw/write anything you
+// want here. Just remember to change the variables above and the array size as you do so.
+char bmp[][15] = 
+{ 
+  {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0        }
+  ,
+  {
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1        }
+  ,
+  {
+    1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1        }
+  ,
+  {
+    1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1        }
+  ,
+  {
+    1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1        }
+  ,
+  {
+    1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1        }
+  ,
+  {
+    1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1        }
+  ,
+  {
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1        }
+  ,
+  {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0       }
+  ,
+};
+// This bitmap represents the initials "KS" (look at the pattern of 1s
+// above to see why.)
+
+// Since this bitmap clearly does not cover the entire 128 by 32 OLED screen
+// we need to specify the co-ordinates where we draw the bitmap.
+// These co-ordinates correspond to the TOP LEFT of the bitmap,
+// so if you wanted to draw this at the very top left of the screen, use (0, 0).
+unsigned int x = 0;
+unsigned int y = 0;
+ 
 
 // Define the top left corner of rocket
 int	xcoRocketStart 	= 48; //8*6
@@ -73,10 +123,39 @@ char	rgBMPExhst2[] = {
 void DeviceInit();
 char CheckSwitches();
 
+// ---------------------------------------------------------------------------//
+// This is the sneaky part... actually drawing your bitmap as a 2D array is
+// very hard, so I helped you out by writing a admittedly hard-to-understand
+// function to convert the bitmap to bytes that the booster pack can understand.
+char* formattedBitmap(char* input, unsigned int width, unsigned int height)
+{
+
+  unsigned int h = ceil(height / 8.0);
+  char *output = (char*)calloc(h * width, sizeof(char));
+  char b, temp;
+  for (unsigned int hbyte = 0; hbyte < h; ++hbyte) {
+    for (unsigned int i = 0; i < width; ++i) {
+      b = 0;
+      for (unsigned int j = 0; j < ((height - hbyte * 8)/8 ? 8 : (height%8)); ++j) {
+        temp = input[(8*hbyte+j)*width+i];
+        if (temp) b |= 1 << j;
+      }
+
+      output[hbyte*width+i]|=b;
+    }
+  }
+  return output;
+}
+char* bitmap = formattedBitmap((char*)bmp, bitmapWidth, bitmapHeight);
+// ---------------------------------------------------------------------------//
 
 void setup()
 {
   DeviceInit();
+  
+  // Reset OLED (function from functions.cpp)
+  //oledReset();
+  OrbitOledUpdate();
 
 
 
@@ -259,9 +338,8 @@ void WelcomeScreen() {
   char welcomeTo[] = {'W','e','l','c','o','m','e',' ','t', 'o'};
   char streetRacer[] = {
   'S','t','r','e','e','t',' ','R','a','c','e','r'};
-  //char empty[] {' ',' ',' ',' ',' ',' '};
-  char start[] = {'S','t','a','r','t',' ',' ',' ',' ',' ','H','e','l','p'};
-  char help[] = {'H','e','l','p'};
+  //char start[] = {'S','t','a','r','t',' ',' ',' ',' ',' ','H','e','l','p'};
+  //char help[] = {'H','e','l','p'};
    
    char a[] = {'a', 'a', 'a', 'a'};
    char b[] = {'b'};
@@ -293,8 +371,8 @@ void WelcomeScreen() {
   /*
    * Display welcome screen
    */
- // OrbitOledSetCursor(3,0);
-  //OrbitOledPutString(welcomeTo);
+  OrbitOledSetCursor(3,0);
+  OrbitOledPutString(welcomeTo);
   
   OrbitOledSetCursor(2,1);
   OrbitOledPutString(streetRacer);  
@@ -302,12 +380,18 @@ void WelcomeScreen() {
   //OrbitOledMoveTo(0,19);
   //OrbitOledLineTo(127, 19);
    
-  OrbitOledSetCursor(0, 4);
-  OrbitOledPutString(start);
+  //OrbitOledSetCursor(0, 4);
+  //OrbitOledPutString(start);
   
 }
 
 void HelpScreen(){
+  
+  // Strings "Tilt the board to move the car"
+  // "Press any button to pause"
+  char line1[] = {'T', 'i', 'l', 't', ' ', 't', 'h', 'e', ' ', 'b', 'o', 'a', 'r', 'd', ' ', ' ', 't', 'o', ' ', 'm', 'o', 'v', 'e', ' ', 't', 'h', 'e', ' ', 'c', 'a', 'r'};
+  char line2[] = {'P', 'r', 'e', 's', 's', ' ', 'a', 'n', 'y', ' ', 'b', 'u', 't', 't', 'o', 'n', ' ', 't', 'o', ' ', 'p', 'a', 'u', 's', 'e'};
+
     /*
    * If applicabe, reset OLED
    */
@@ -317,9 +401,21 @@ void HelpScreen(){
     OrbitOledSetCursor(0,0);
     fClearOled = false;
   } 
+  
+  OrbitOledSetCursor(0,0);
+  OrbitOledPutString(line1);
+  
+  OrbitOledSetCursor(0,2);
+  OrbitOledPutString(line2); 
+  
+  
 }
 
 void GameScreen(){
+  
+  // Strings "level selection"
+  //char levelSelections[] = {};
+  
     /*
    * If applicabe, reset OLED
    */
@@ -329,6 +425,25 @@ void GameScreen(){
     OrbitOledSetCursor(0,0);
     fClearOled = false;
   } 
+  
+  for(int i=10;i<128;i+=10)
+  { 
+    OrbitOledClear();
+    x=i;
+    int numCars=7;
+    int xcoors[]={10,40,49,59,79,82,97    };
+   int ycoors[]={0,20,20,10,0,0,20    };
+      
+    for(int j=0;j<numCars;j++){
+      int xcoor=x-xcoors[j];
+      if(xcoor>=0)
+      oledDraw(bitmap, xcoor, ycoors[j], bitmapWidth, bitmapHeight);
+      OrbitOledUpdate();
+      delay(80);
+    }
+  }
+  oledReset();
+  
 }
 
 void OverScreen(){
