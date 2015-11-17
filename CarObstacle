@@ -100,6 +100,7 @@ void setup()
 
 void loop()
 {
+
   // Feed our bitmap and its dimensions and co-ordinates into
   // the helper function
  // oledDraw(bitmap, x, y, bitmapWidth, bitmapHeight);
@@ -121,10 +122,8 @@ void loop()
     OrbitOledClear();
     x=i;
     int numCars=7;
-    int[numCars]xcoors={
-      10,40,69,99,139,162,165    };
-    int[numCars]ycoors={
-      0,20,20,10,0,0,20    };
+    int xcoors[]={10,40,49,59,79,82,97    };
+   int ycoors[]={0,20,20,10,0,0,20    };
       
     for(int j=0;j<numCars;j++){
       int xcoor=x-xcoors[j];
