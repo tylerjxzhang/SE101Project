@@ -14,40 +14,46 @@
 /* ------------------------------------------------------------ */
 /* Local Variables                        			*/
 /* ------------------------------------------------------------ */
+
 const unsigned int bitmapHeight =9;  // The height of the bitmap we're about to create
 const unsigned int bitmapWidth = 15;   // The width of the bitmap we're about to create
 
-// Create the bitmap of car
+// Now create the bitmap (make sure it has the correct width and height as specified above)
+// To make it simple, we're using binary. It's simple - 1 means LED is on. 0=off.
+// You can make the bitmap as big as you want (within reason) and draw/write anything you
+// want here. Just remember to change the variables above and the array size as you do so.
 char bmp[][15] = 
 { 
   {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0      }
-    ,
-    {
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1      }
-    ,
-    {
-    1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1      }
-    ,
-    {
-    1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1      }
-    ,
-    {
-    1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1      }
-    ,
-    {
-    1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1      }
-    ,
-    {
-    1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1      }
-    ,
-    {
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1      }
-    ,
-     {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0     }
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0        }
+  ,
+  {
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1        }
+  ,
+  {
+    1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1        }
+  ,
+  {
+    1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1        }
+  ,
+  {
+    1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1        }
+  ,
+  {
+    1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1        }
+  ,
+  {
+    1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1        }
+  ,
+  {
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1        }
+  ,
+  {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0       }
   ,
 };
+// This bitmap represents the initials "KS" (look at the pattern of 1s
+// above to see why.)
 
 // Since this bitmap clearly does not cover the entire 128 by 32 OLED screen
 // we need to specify the co-ordinates where we draw the bitmap.
@@ -96,31 +102,37 @@ void loop()
 {
   // Feed our bitmap and its dimensions and co-ordinates into
   // the helper function
-  oledDraw(bitmap, x, y, bitmapWidth, bitmapHeight);
-  oledDraw(bitmap, x-10, y+20, bitmapWidth, bitmapHeight);
+ // oledDraw(bitmap, x, y, bitmapWidth, bitmapHeight);
+ // oledDraw(bitmap, x-10, y+20, bitmapWidth, bitmapHeight);
 
   // Wait for the user to perceive the image
-  //delay(50);
+ // delay(50);
 
-  OrbitOledUpdate();
-  delay(80);
+  // In this case, since nothing is moving/animating, there is no need
+  // to clear the screen on every iteration of the (infinite) loop.
+  // But this is really only necessary once you start doing animation
+  // (ideally, by shifting the x and y co-ordinates of the bitmap 
+  // or using different bitmaps)
+//  OrbitOledUpdate();
+//  delay(50);
 
- //Move the car up by changing the x coordinate and delaying some time in between
   for(int i=10;i<128;i+=10)
   { 
     OrbitOledClear();
     x=i;
-    
-    //Draw the two cars with different x and y. (the first one 0,0; second one -10, 20 which is on the third lane)
-    oledDraw(bitmap, x, y, bitmapWidth, bitmapHeight);
-    oledDraw(bitmap, x-10, y+20, bitmapWidth, bitmapHeight);
-    
-    OrbitOledUpdate();
-    delay(80);
+    int numCars=7;
+    int[numCars]xcoors={
+      10,40,69,99,139,162,165    };
+    int[numCars]ycoors={
+      0,20,20,10,0,0,20    };
+      
+    for(int j=0;j<numCars;j++){
+      int xcoor=x-xcoors[j];
+      if(xcoor>=0)
+      oledDraw(bitmap, xcoor, ycoors[j], bitmapWidth, bitmapHeight);
+      OrbitOledUpdate();
+      delay(80);
+    }
   }
-  
   oledReset();
-
 }
-
-
