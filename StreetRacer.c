@@ -1,4 +1,3 @@
-extern "C"{
 #include "functions.h"
 #include <delay.h>
 #include <FillPat.h>
@@ -8,7 +7,6 @@ extern "C"{
 #include <OrbitOled.h>
 #include <OrbitOledChar.h>
 #include <OrbitOledGrph.h>
-}
 
 /* ------------------------------------------------------------ */
 /*				Local Type Definitions		*/
@@ -425,24 +423,27 @@ void GameScreen(){
     OrbitOledSetCursor(0,0);
     fClearOled = false;
   } 
-  
-  for(int i=10;i<128;i+=10)
+      
+for(int i= -10;i<288;i+=8)
   { 
     OrbitOledClear();
     x=i;
     int numCars=7;
-    int xcoors[]={10,40,49,59,79,82,97    };
-   int ycoors[]={0,20,20,10,0,0,20    };
+    int xcoors[]={10,40,60,89,129,212,273    };
+    int ycoors[]={0,20,20,10,0,0,20    };
       
     for(int j=0;j<numCars;j++){
       int xcoor=x-xcoors[j];
-      if(xcoor>=0)
-      oledDraw(bitmap, xcoor, ycoors[j], bitmapWidth, bitmapHeight);
+      //if(xcoor>=0&&xcoor<=128)
+      oledDraw(bitmap, x-xcoors[j], ycoors[j], bitmapWidth, bitmapHeight);
       OrbitOledUpdate();
-      delay(80);
+     
     }
+     delay(70);
+    
   }
   oledReset();
+  
   
 }
 
