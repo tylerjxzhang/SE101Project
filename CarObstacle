@@ -1,15 +1,24 @@
-//If possible can someone take a photo of the screen with this code? I forgot to save the code lost the original bmp.
-//I also added commented some code and those lines I'm not sure if we need it or not.
+/***********************
+ * Programmer: Kenneth Sinder
+ * Date: 2015-11-05
+ * Filename: oledTemplate.ino
+ * Description: DEMONSTRATES BASIC BITMAPS AND OLED DISPLAY
+ *              ON THE BOOSTER PACK
+ ************************/
 
+// I put some helpful functions, including some short wrapper functions
+// that you could do without, and the massive block of code similar to the demo
+// that is necessary in order to intialize the booster pack.
 #include "functions.h" // Energia will compile the functions.cpp file for us
-//#include <delay.h>
-//#include <FillPat.h>
-//#include <I2CEEPROM.h>
-//#include <LaunchPad.h>
-//#include <OrbitBoosterPackDefs.h>
-//#include <OrbitOled.h>
-//#include <OrbitOledChar.h>
-//#include <OrbitOledGrph.h>
+#include <delay.h>
+#include <FillPat.h>
+#include <I2CEEPROM.h>
+#include <LaunchPad.h>
+#include <OrbitBoosterPackDefs.h>
+#include <OrbitOled.h>
+#include <OrbitOledChar.h>
+#include <OrbitOledGrph.h>
+
 
 /* ------------------------------------------------------------ */
 /* Local Variables                        			*/
@@ -100,7 +109,6 @@ void setup()
 
 void loop()
 {
-
   // Feed our bitmap and its dimensions and co-ordinates into
   // the helper function
  // oledDraw(bitmap, x, y, bitmapWidth, bitmapHeight);
@@ -114,24 +122,29 @@ void loop()
   // But this is really only necessary once you start doing animation
   // (ideally, by shifting the x and y co-ordinates of the bitmap 
   // or using different bitmaps)
-//  OrbitOledUpdate();
-//  delay(50);
+  //OrbitOledUpdate();
+  //delay(50);
 
-  for(int i=10;i<128;i+=10)
+  for(int i= -10;i<1000;i+=8)
   { 
     OrbitOledClear();
     x=i;
     int numCars=7;
-    int xcoors[]={10,40,49,59,79,82,97    };
-   int ycoors[]={0,20,20,10,0,0,20    };
+    int xcoors[]={10,40,60,89,129,212,273    };
+    int ycoors[]={0,20,20,10,0,0,20    };
       
     for(int j=0;j<numCars;j++){
       int xcoor=x-xcoors[j];
-      if(xcoor>=0)
-      oledDraw(bitmap, xcoor, ycoors[j], bitmapWidth, bitmapHeight);
+      //if(xcoor>=0&&xcoor<=128)
+      oledDraw(bitmap, x-xcoors[j], ycoors[j], bitmapWidth, bitmapHeight);
       OrbitOledUpdate();
-      delay(80);
+     
     }
+     delay(70);
   }
   oledReset();
 }
+
+
+
+
