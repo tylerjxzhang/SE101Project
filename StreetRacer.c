@@ -43,38 +43,6 @@ const unsigned int bitmapWidth = 15;   // The width of the bitmap we're about to
 // To make it simple, we're using binary. It's simple - 1 means LED is on. 0=off.
 // You can make the bitmap as big as you want (within reason) and draw/write anything you
 // want here. Just remember to change the variables above and the array size as you do so.
-char bmp1[][15] = 
-{ 
-  {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0        }
-  ,
-  {
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1        }
-  ,
-  {
-    1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1        }
-  ,
-  {
-    1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1        }
-  ,
-  {
-    1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1        }
-  ,
-  {
-    1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1        }
-  ,
-  {
-    1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1        }
-  ,
-  {
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1        }
-  ,
-  {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0       }
-  ,
-};
-
-
 char bmp[][15] = 
 { 
   {
@@ -87,6 +55,53 @@ char bmp[][15] =
     1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1        }
   ,
   {
+    1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1        }
+  ,
+  {
+    1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1        }
+  ,
+  {
+    1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1        }
+  ,
+  {
+    1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1        }
+  ,
+  {
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1        }
+  ,
+  {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0       }
+  ,
+};
+
+int xcoCarStart = 113;
+int ycoCarStart = 10;
+
+int carHeight = 9;
+int carWidth= 15;
+
+//char bmpCar[][15] = {{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+//                     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+//                     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+//                     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+//                     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+//                     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+//                     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+//                     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+//                     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}};
+
+char bmpCar[][15] = 
+{ 
+  {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0        }
+  ,
+  {
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1        }
+  ,
+  {
+    1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1        }
+  ,
+  {
     1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1        }
   ,
   {
@@ -105,6 +120,7 @@ char bmp[][15] =
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0       }
   ,
 };
+                     
 // This bitmap represents the initials "KS" (look at the pattern of 1s
 // above to see why.)
 
@@ -115,38 +131,6 @@ char bmp[][15] =
 unsigned int x = 0;
 unsigned int y = 0;
  
-
-// Define the top left corner of rocket
-int	xcoRocketStart 	= 48; //8*6
-int	ycoRocketStart	= 11;
-
-int	xcoExhstStart	= 39;
-int	ycoExhstStart	= 11;
-
-int	cRocketWidth 	= 24;
-int	cRocketHeight 	= 16;
-
-int	cExhstWidth	= 9;
-int	cExhstHeight	= 16;
-
-int	fExhstSwt	= 0;
-
-char	rgBMPRocket[] = {
-  0xFF, 0x11, 0xF1, 0x11, 0xF1, 0x12, 0x14, 0x18,
-  0x90, 0x10, 0x10, 0x10, 0x10, 0x10, 0x90, 0x10,
-  0x10, 0xE0, 0xC0, 0x80, 0x80, 0x80, 0x80, 0x80,
-  0xFF, 0x88, 0x8F, 0x88, 0x8F, 0x48, 0x28, 0x19,
-  0x0A, 0x09, 0x08, 0x08, 0x08, 0x09, 0x0A, 0x09,
-  0x08, 0x07, 0x03, 0x01, 0x01, 0x01, 0x01, 0x01};
-
-char	rgBMPExhst1[] = {
-  0x00, 0x00, 0x00, 0x00, 0x80, 0xC0, 0xE0, 0xF0, 0xF0,
-  0x00, 0x00, 0x00, 0x00, 0x01, 0x03, 0x07, 0x0F, 0x0F};
-
-char	rgBMPExhst2[] = {
-  0x00, 0x80, 0x80, 0xC0, 0xE0, 0xE0, 0xF0, 0xF0, 0xF0,
-  0x00, 0x01, 0x01, 0x03, 0x07, 0x07, 0x0F, 0x0F, 0x0F};
-
 
 /* ------------------------------------------------------------ */
 /*				Forward Declarations							*/
@@ -178,6 +162,7 @@ char* formattedBitmap(char* input, unsigned int width, unsigned int height)
   return output;
 }
 char* bitmap = formattedBitmap((char*)bmp, bitmapWidth, bitmapHeight);
+char* carBitmap = formattedBitmap ((char*)bmpCar, carWidth, carHeight);
 // ---------------------------------------------------------------------------//
 
 void setup()
@@ -435,15 +420,64 @@ void GameScreen(){
   // Strings "level selection"
   //char levelSelections[] = {};
   
-    /*
-   * If applicabe, reset OLED
+  // Accelerometer variables
+  char chPwrCtlReg = 0x2D;
+  char chY0Addr = 0x34;
+  
+  char 	rgchReadAccl[] = {
+    0, 0, 0            };
+  char 	rgchWriteAccl[] = {
+    0, 0            };
+    
+  /*
+   * If applicable, reset OLED
    */
   if(fClearOled == true) {
     OrbitOledClear();
     OrbitOledMoveTo(0,0);
     OrbitOledSetCursor(0,0);
     fClearOled = false;
-  } 
+
+    /*
+     * Enable I2C Peripheral
+     */
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_I2C0);
+    SysCtlPeripheralReset(SYSCTL_PERIPH_I2C0);
+
+    /*
+     * Set I2C GPIO pins
+     */
+    GPIOPinTypeI2C(I2CSDAPort, I2CSDA_PIN);
+    GPIOPinTypeI2CSCL(I2CSCLPort, I2CSCL_PIN);
+    GPIOPinConfigure(I2CSCL);
+    GPIOPinConfigure(I2CSDA);
+
+    /*
+     * Setup I2C
+     */
+    I2CMasterInitExpClk(I2C0_BASE, SysCtlClockGet(), false);
+
+    /* Initialize the Accelerometer
+     *
+     */
+    GPIOPinTypeGPIOInput(ACCL_INT2Port, ACCL_INT2);
+
+    rgchWriteAccl[0] = chPwrCtlReg;
+    rgchWriteAccl[1] = 1 << 3;		// sets Accl in measurement mode
+    I2CGenTransmit(rgchWriteAccl, 1, WRITE, ACCLADDR);
+
+  }
+  
+  short dataY;
+
+  int	xcoCarCur = xcoCarStart;
+  int 	ycoCarCur = ycoCarStart;
+
+  int	yDirThreshPos = 50;
+  int	yDirThreshNeg = -50;
+  
+  bool fDir = true;
+  bool carDrawn = false;
       
 for(int i= -15;i<401;i+=8)
   { 
@@ -453,10 +487,58 @@ for(int i= -15;i<401;i+=8)
     int xcoors[]={10,40,60,89,129,212,273    };
     int ycoors[]={0,20,20,10,0,0,20    };
     int switchChange = 0;
-      
+  
+ /*___________________________________________________________________*/   
+  /*
+   * Draw the starting car
+   */
+  if (!carDrawn){
+  oledDraw(carBitmap, xcoCarStart, ycoCarStart, carWidth, carHeight);
+  OrbitOledUpdate();
+  
+  carDrawn = true;
+  }
+  
+  /*
+   * Read accelerometer information
+   */
+   rgchReadAccl[0] = chY0Addr;
+   I2CGenTransmit(rgchReadAccl, 2, READ, ACCLADDR);
+   
+   dataY = (rgchReadAccl[2] << 8) | rgchReadAccl[1];
+   
+   /*
+     * Check and see if Accel is positive or negative
+     * and set fDir accordingly
+     */
+    if(dataY > 0 && dataY > yDirThreshNeg) {
+      fDir = false;
+
+      if(ycoCarCur <= (crowOledMax - 14)) {
+        ycoCarCur+=3;
+      }
+
+     CarMove(xcoCarCur, ycoCarCur);
+    }
+
+    else if(dataY < 0 && dataY < yDirThreshPos) {
+      fDir = true;
+
+      if(ycoCarCur >= 0) {
+        ycoCarCur-=3;
+      }
+
+      CarMove(xcoCarCur, ycoCarCur);
+    }
+
+    else {
+      //RocketStop(xcoRocketCur, ycoRocketCur, fDir);
+    }
+/*_________________________________________________________________*/    
+     
     for(int j=0;j<numCars;j++){
       int xcoor=x-xcoors[j];
-      if(xcoor>=0&&xcoor<=128)
+      if(xcoor >= 0 && xcoor <=128)
           oledDraw(bitmap, xcoor, ycoors[j], bitmapWidth, bitmapHeight);
      
       OrbitOledUpdate();
@@ -484,6 +566,14 @@ for(int i= -15;i<401;i+=8)
   
   
 }
+
+void CarMove (int xcoUpdate, int ycoUpdate) {
+  OrbitOledMoveTo(xcoUpdate, ycoUpdate);
+  OrbitOledPutBmp(carWidth, carHeight, carBitmap);
+  
+  OrbitOledUpdate();
+}
+
 
 void StopScreen(){
     /*
