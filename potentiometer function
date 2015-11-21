@@ -1,0 +1,21 @@
+
+/**
+*Returns 'A'-'P' depending on the position of potentiometer ('A' for leftmost and 'P' for right most), total of 16 return values possible
+**/
+char potentiometer()
+{
+  uint32_t	ulAIN0;
+
+  char		cMSB = 0x00;
+ 
+  ADCProcessorTrigger(ADC0_BASE, 0);
+
+  while(!ADCIntStatus(ADC0_BASE, 0, false));
+
+  ADCSequenceDataGet(ADC0_BASE, 0, &ulAIN0);
+  
+  cMSB = (0xF00 & ulAIN0) >> 8;
+  char a = (cMSB > -1) ? 'A' + (cMSB - 0) : '0' + cMSB;
+ 
+  return a;
+}
