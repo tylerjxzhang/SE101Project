@@ -43,7 +43,7 @@ const unsigned int bitmapWidth = 15;   // The width of the bitmap we're about to
 // To make it simple, we're using binary. It's simple - 1 means LED is on. 0=off.
 // You can make the bitmap as big as you want (within reason) and draw/write anything you
 // want here. Just remember to change the variables above and the array size as you do so.
-char bmp[][15] = 
+char bmp1[][15] = 
 { 
   {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0        }
@@ -65,6 +65,38 @@ char bmp[][15] =
   ,
   {
     1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1        }
+  ,
+  {
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1        }
+  ,
+  {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0       }
+  ,
+};
+
+
+char bmp[][15] = 
+{ 
+  {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0        }
+  ,
+  {
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1        }
+  ,
+  {
+    1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1        }
+  ,
+  {
+    1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1        }
+  ,
+  {
+    1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1        }
+  ,
+  {
+    1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1        }
+  ,
+  {
+    1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1        }
   ,
   {
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1        }
