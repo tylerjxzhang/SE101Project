@@ -77,6 +77,9 @@ char bmp[][15] =
 int xcoCarStart = 112;
 int ycoCarStart = 10;
 
+int xcoCarCur = xcoCarStart;
+int ycoCarCur = ycoCarStart;
+
 int carHeight = 9;
 int carWidth= 15;
 
@@ -751,9 +754,6 @@ void GameScreen(){
 
   short dataY;
 
-  int	xcoCarCur = xcoCarStart;
-  int 	ycoCarCur = ycoCarStart;
-
   int	yDirThreshPos = 50;
   int	yDirThreshNeg = -50;
 
@@ -776,7 +776,7 @@ void GameScreen(){
    * Draw the starting car
      */
     if (!carDrawn){
-      oledDraw(carBitmap, xcoCarStart, ycoCarStart, carWidth, carHeight);
+      oledDraw(carBitmap, xcoCarCur, ycoCarCur, carWidth, carHeight);
       OrbitOledUpdate();
 
       carDrawn = true;
@@ -800,8 +800,6 @@ void GameScreen(){
       if(ycoCarCur <= (crowOledMax - 14)) {
         ycoCarCur+=3;
       }
-
-      CarMove(xcoCarCur, ycoCarCur);
     }
 
     else if(dataY < 0 && dataY < yDirThreshPos) {
@@ -810,9 +808,9 @@ void GameScreen(){
       if(ycoCarCur >= 0) {
         ycoCarCur-=3;
       }
-
-      CarMove(xcoCarCur, ycoCarCur);
     }
+
+    CarMove(xcoCarCur, ycoCarCur);
 
     /*_________________________________________________________________*/
 
