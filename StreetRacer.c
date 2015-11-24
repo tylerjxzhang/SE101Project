@@ -14,7 +14,7 @@
 #define WELCOME		0
 #define HELP		2
 #define GAME		1
-#define STOP		3
+#define SURVIVAL	3
 #define RED_LED   GPIO_PIN_1
 #define BLUE_LED  GPIO_PIN_2
 #define GREEN_LED GPIO_PIN_3
@@ -478,8 +478,8 @@ void loop()
   case GAME:
     GameScreen();
     break;
-  case STOP:
-    StopScreen();
+  case SURVIVAL:
+    SurvivalScreen();
     break;
   default:
     WelcomeScreen();
@@ -814,9 +814,6 @@ void GameScreen(){
       CarMove(xcoCarCur, ycoCarCur);
     }
 
-    else {
-      //RocketStop(xcoRocketCur, ycoRocketCur, fDir);
-    }
     /*_________________________________________________________________*/
 
     for(int j=0;j<numCars;j++){
@@ -858,7 +855,7 @@ void CarMove (int xcoUpdate, int ycoUpdate) {
 }
 
 
-void StopScreen(){
+void SurvivalScreen(){
   /*
    * If applicabe, reset OLED
    */
