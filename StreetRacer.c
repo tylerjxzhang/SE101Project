@@ -875,11 +875,11 @@ void StopScreen(){
   oledDraw(threeBitmap, 105, 5, 20, 20);
 
   char potent=potentiometer();
-  if(potent>='A'&& potent<='E')
+ // if(potent>='A'&& potent<='E')
     //oledDraw(oneOppositeBitmap, 35, 5, 20, 20);
-  else if(potent>='F'&& potent<='J')
+  //else if(potent>='F'&& potent<='J')
     //oledDraw(twoOppositeBitmap, 35, 5, 20, 20);
-  else if(potent>='K'&& potent<='P')
+  //else if(potent>='K'&& potent<='P')
     //oledDraw(threeOppositeBitmap, 35, 5, 20, 20);
 
   OrbitOledUpdate();
