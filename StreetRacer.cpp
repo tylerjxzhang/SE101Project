@@ -7,6 +7,7 @@
 #include <OrbitOled.h>
 #include <OrbitOledChar.h>
 #include <OrbitOledGrph.h>
+#include <stdlib.h>
 
 /* ------------------------------------------------------------ */
 /*				Local Type Definitions		*/
@@ -825,7 +826,7 @@ void CreditsScreen(){
   char line1[] = {'C', 'R', 'E', 'D', 'I', 'T', 'S'};
   char line2[] = {
    'K', 'i', 't', 't', 'y', ',', ' ', 'M', 'e', 'l', 'i', 's', 's', 'a', ',', ' ', 'X', 'i', 'n', ' ', 'P', 'i', 'n', 'g', ',' };
-    char line3[] = {'M', 'e', 'n', 'g', 'x', 'u', 'e'};
+    char line3[] = {'M', 'e', 'n', 'g', 'x', 'u', 'e', ' ', 'T', 'y', 'l', 'e', 'r', '!', };
 
   /*
    * If applicabe, reset OLED
@@ -1008,7 +1009,7 @@ void GameScreen(){
           fDir = false;
     
           if(ycoCarCur <= (crowOledMax - 14)) {
-            ycoCarCur+=3;
+            ycoCarCur+=5;
           }
         }
     
@@ -1016,7 +1017,7 @@ void GameScreen(){
           fDir = true;
     
           if(ycoCarCur >= 0) {
-            ycoCarCur-=3;
+            ycoCarCur-=5;
           }
         }
     
@@ -1115,6 +1116,26 @@ void CarMove (int xcoUpdate, int ycoUpdate) {
   OrbitOledUpdate();
 }
 
+int[] mapGenX(){
+  int mapX[999];
+  int xPo = 0;
+  for(int i = 0; i < 999; i++){
+    xPo += rand % 50 + 30;
+    mapX[i] = xPo;
+  }
+  return mapX;
+}
+
+int[] mapGenY(){
+  int mapY[999];
+  int yPo;
+  for(int i = 0; i < 999; i++){
+    yPo = (rand() % 3) * 10;
+    mapY[i] = yPo;
+  } 
+  return mapY;
+}
+
 /* ------------------------------------------------------------ */
 /***	SurvivalScreen
  **
@@ -1131,17 +1152,214 @@ void CarMove (int xcoUpdate, int ycoUpdate) {
  **		Survival mode of the game
  */
 void SurvivalScreen(){
+  long      lBtn1;
+  long      lBtn2;
+  
+  int levelX[] = mapGenX()
+  int levelY[] = mapGenY()
+  
+  // Accelerometer variables
+  char chPwrCtlReg = 0x2D;
+  char chY0Addr = 0x34;
+
+  char  rgchReadAccl[] = { 0, 0, 0 };
+  char  rgchWriteAccl[] = {0, 0 };
+  
+  short dataY;
+
+  int yDirThreshPos = 50;
+  int yDirThreshNeg = -50;
+
+  bool fDir = true;
+  bool carDrawn = false;
+  
+  int switchChange = 0;
+  int collided = 0;
+  
+ 
   /*
-   * If applicabe, reset OLED
+   * If applicable, reset OLED
    */
   if(fClearOled == true) {
     OrbitOledClear();
     OrbitOledMoveTo(0,0);
     OrbitOledSetCursor(0,0);
     fClearOled = false;
-  } 
+  }
+  
+      /*
+     * Enable I2C Peripheral
+     */
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_I2C0);
+    SysCtlPeripheralReset(SYSCTL_PERIPH_I2C0);
 
-  OrbitOledUpdate();
+    /*
+     * Set I2C GPIO pins
+     */
+    GPIOPinTypeI2C(I2CSDAPort, I2CSDA_PIN);
+    GPIOPinTypeI2CSCL(I2CSCLPort, I2CSCL_PIN);
+    GPIOPinConfigure(I2CSCL);
+    GPIOPinConfigure(I2CSDA);
+
+    /*
+     * Setup I2C
+     */
+    I2CMasterInitExpClk(I2C0_BASE, SysCtlClockGet(), false);
+
+    /* Initialize the Accelerometer
+     *
+     */
+    GPIOPinTypeGPIOInput(ACCL_INT2Port, ACCL_INT2);
+
+    rgchWriteAccl[0] = chPwrCtlReg;
+    rgchWriteAccl[1] = 1 << 3;    // sets Accl in measurement mode
+    I2CGenTransmit(rgchWriteAccl, 1, WRITE, ACCLADDR);
+  
+  if (gameStart == 0)
+  {
+      //Count down from three to one
+     
+      oledDraw(threeBitmap, 50, 5, 20, 20);
+      delay(200);
+      oledDraw(threeOppositeBitmap, 50, 5, 20, 20);
+      delay(50);
+      oledDraw(twoBitmap, 50, 5, 20, 20);
+      delay(200);
+      oledDraw(twoOppositeBitmap, 50, 5, 20, 20);
+      delay(50);
+      oledDraw(oneBitmap, 50, 5, 20, 20);
+      delay(200);
+      oledDraw(oneOppositeBitmap, 50, 5, 20, 20);
+      delay(50);
+
+         
+        gameStart = 1;
+        //OrbitOledUpdate();
+      }
+      
+      OrbitOledUpdate();
+  }
+  
+  else
+  {
+      numCars = 999;
+      xcoors = levelX;
+      ycoors = levelY;
+      for(int i = -15; i < xcoors[numCars - 1] + 150 && !collided; i += 6)
+      { 
+        
+        OrbitOledClear();
+        x=i;
+    
+        /*___________________________________________________________________*/
+        /*
+         * Draw the starting car
+         */
+        if (!carDrawn){
+          oledDraw(carBitmap, xcoCarCur, ycoCarCur, carWidth, carHeight);
+          OrbitOledUpdate();
+    
+          carDrawn = true;
+        }
+    
+        /*
+         * Read accelerometer information
+         */
+        rgchReadAccl[0] = chY0Addr;
+        I2CGenTransmit(rgchReadAccl, 2, READ, ACCLADDR);
+    
+        dataY = (rgchReadAccl[2] << 8) | rgchReadAccl[1];
+    
+        /*
+         * Check and see if Accel is positive or negative and set fDir accordingly
+         */
+        if(dataY > 0 && dataY > yDirThreshNeg) {
+          fDir = false;
+    
+          if(ycoCarCur <= (crowOledMax - 14)) {
+            ycoCarCur+=5;
+          }
+        }
+    
+        else if(dataY < 0 && dataY < yDirThreshPos) {
+          fDir = true;
+    
+          if(ycoCarCur >= 0) {
+            ycoCarCur-=5;
+          }
+        }
+    
+        CarMove(xcoCarCur, ycoCarCur);
+        
+         
+    
+        /*_________________________________________________________________*/
+    
+       for(int j = 0; j < 999 && !collided; j++){
+          int xcoor = x - xcoors[j];
+          if(xcoor >= 0 && xcoor <= 128)
+            oledDraw(bitmap, xcoor, ycoors[j], bitmapWidth, bitmapHeight);
+    
+          if(collision(xcoCarCur, ycoCarCur, xcoor, ycoors[j]))
+          {
+            collided = 1;
+            gameStart = 0;
+            break;
+          }
+    
+          OrbitOledUpdate();
+    
+          bGameState = CheckSwitches(); 
+    
+        /*
+         * If applicabe, reset OLED
+         */
+        if(fClearOled == true) {
+          switchChange = 1;
+          OrbitOledClear();
+          OrbitOledMoveTo(0,0);
+          OrbitOledSetCursor(0,0);
+          fClearOled = false;
+        }
+    
+          if (switchChange == 1||collided==1)
+          {
+            gameStart = 0;
+            OrbitOledClear();
+            break;
+          }
+        }
+          
+        delay(50);
+        
+          if (switchChange == 1)
+          {
+            gameStart = 0;
+            OrbitOledClear();
+            break;
+          }
+          if (collided == 1)
+          {
+            gameStart = 0;
+            OrbitOledClear();
+            oledDraw(youLoseBitmap, 35, 2, 30, 30);
+            OrbitOledUpdate();
+            delay(1500);
+            OrbitOledClear();
+            break; 
+          }
+      }
+      if (switchChange == 0  && collided == 0)
+         {
+            delay(500);
+            gameStart = 0;
+            OrbitOledClear();
+            oledDraw(youWinBitmap, 35, 2, 30, 30);
+            OrbitOledUpdate();
+            delay(2000);
+            OrbitOledClear();
+          }
+  }
 }
 
 /*
